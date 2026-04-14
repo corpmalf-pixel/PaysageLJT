@@ -209,6 +209,19 @@ h2 {
   margin-bottom: 0;
 }
 
+.service-heading h2 {
+  max-width: 22ch;
+  font-size: clamp(1.65rem, 2.9vw, 2.8rem);
+  line-height: 1.12;
+}
+
+.contact-title {
+  max-width: 18ch;
+  font-size: clamp(1.55rem, 2.5vw, 2.35rem);
+  line-height: 1.14;
+  margin-bottom: 1.15rem;
+}
+
 h3 {
   font-size: 1.28rem;
   margin-bottom: 0.8rem;
@@ -230,6 +243,11 @@ h3 {
 .hero-text {
   max-width: 60ch;
   font-size: 1.08rem;
+}
+
+.intro-card-compact {
+  width: min(100%, 640px);
+  padding: 1.5rem 1.75rem;
 }
 
 .hero-actions,
@@ -332,6 +350,10 @@ h3 {
   gap: 2.5rem;
 }
 
+.section-cta-center {
+  justify-content: center;
+}
+
 .section-heading {
   width: min(100%, 860px);
 }
@@ -356,6 +378,21 @@ h3 {
 
 .service-card,
 .gallery-card {
+  padding: 2rem;
+}
+
+.service-card-media {
+  min-height: 260px;
+  justify-content: space-between;
+}
+
+.carousel-placeholder {
+  min-height: 340px;
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   padding: 2rem;
 }
 
@@ -435,6 +472,20 @@ h3 {
   font-weight: 800;
 }
 
+.contact-card-compact {
+  width: min(100%, 360px);
+  justify-self: end;
+  padding: 1.25rem 1.35rem;
+}
+
+.hours-list-compact {
+  font-size: 0.92rem;
+}
+
+.hours-list-compact li {
+  padding: 0.48rem 0;
+}
+
 .full-width {
   width: 100%;
 }
@@ -474,6 +525,10 @@ h3 {
   .intro-layout,
   .three-cols {
     grid-template-columns: 1fr;
+  }
+
+  .contact-card-compact {
+    justify-self: start;
   }
 
   .hero-grid {
