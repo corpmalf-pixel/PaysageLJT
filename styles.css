@@ -397,147 +397,105 @@ h3 {
 }
 
 .realisations-carousel {
-  --slides-per-view: 3;
-  --slide-gap: 1.2rem;
   position: relative;
   display: grid;
-  gap: 1.6rem;
+  gap: 1.8rem;
 }
 
-.carousel-shell {
+.coverflow-carousel {
+  padding-inline: 1rem;
+}
+
+.coverflow-stage {
   position: relative;
-  padding: 0 3.8rem;
-}
-
-.carousel-viewport {
   overflow: hidden;
-  scroll-snap-type: x mandatory;
-  border-radius: 36px;
+  padding: 1.5rem 0 1rem;
   outline: none;
+  perspective: 1800px;
 }
 
-.carousel-track {
+.coverflow-stage::before {
+  content: "";
+  position: absolute;
+  inset: 18% 10% 0;
+  background: radial-gradient(circle, rgba(218, 241, 222, 0.18), transparent 62%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.coverflow-track {
   display: flex;
-  gap: var(--slide-gap);
+  align-items: center;
+  gap: 0;
   will-change: transform;
   transform: translate3d(0, 0, 0);
-  transition: transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-style: preserve-3d;
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
   touch-action: pan-y pinch-zoom;
 }
 
-.realisations-slide {
+.coverflow-slide {
+  flex: 0 0 min(68vw, 420px);
+  width: min(68vw, 420px);
+  padding: 0 0.65rem;
+  transform-style: preserve-3d;
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.9s ease, filter 0.9s ease;
+}
+
+.coverflow-card {
   position: relative;
-  flex: 0 0 calc((100% - (var(--slide-gap) * (var(--slides-per-view) - 1))) / var(--slides-per-view));
-  min-width: 0;
-  min-height: 420px;
-  padding: 1rem;
-  border-radius: 28px;
+  min-height: 540px;
+  overflow: hidden;
+  border-radius: 30px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 8px 32px rgba(5, 31, 32, 0.12);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28), 0 8px 32px rgba(5, 31, 32, 0.12);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  scroll-snap-align: center;
-  transform: translateZ(0);
 }
 
-.slide-media-pair {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  align-items: stretch;
-  gap: 0.85rem;
-  min-height: 100%;
+.coverflow-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 28%, rgba(5, 31, 32, 0.2));
+  pointer-events: none;
 }
 
-.before-after-card {
-  margin: 0;
-  position: relative;
-  overflow: hidden;
-  border-radius: 24px;
-  min-height: 388px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.before-after-card img {
+.coverflow-card img {
+  display: block;
   width: 100%;
   height: 100%;
-  display: block;
   object-fit: cover;
   aspect-ratio: 4 / 5;
 }
 
-.before-after-card figcaption {
-  position: absolute;
-  left: 1rem;
-  bottom: 1rem;
-  padding: 0.55rem 0.9rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #fff;
-  font-size: 0.8rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+.coverflow-slide.is-active {
+  z-index: 4;
+  opacity: 1;
+  filter: blur(0);
+  transform: translate3d(0, 0, 120px) scale(1);
 }
 
-.before-after-divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  min-width: 24px;
+.coverflow-slide.is-prev {
+  z-index: 3;
+  opacity: 0.82;
+  filter: blur(1.4px);
+  transform: translate3d(20%, 0, -120px) rotateY(32deg) scale(0.84);
 }
 
-.before-after-divider::before {
-  content: "";
-  width: 1px;
-  height: 100%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+.coverflow-slide.is-next {
+  z-index: 3;
+  opacity: 0.82;
+  filter: blur(1.4px);
+  transform: translate3d(-20%, 0, -120px) rotateY(-32deg) scale(0.84);
 }
 
-.before-after-divider span {
-  position: absolute;
-  padding: 0.6rem 0.78rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #fff;
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 10px 30px rgba(5, 31, 32, 0.16);
-  transform: rotate(-90deg);
-}
-
-.slide-placeholder-block {
-  min-height: 388px;
-  border-radius: 24px;
-  display: grid;
-  align-content: end;
-  padding: 1.75rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
-  color: rgba(255, 255, 255, 0.92);
-}
-
-.placeholder-eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 0.76rem;
-  color: rgba(218, 241, 222, 0.72);
-}
-
-.slide-placeholder-block h3 {
-  color: #fff;
-}
-
-.slide-placeholder-block p {
-  color: rgba(218, 241, 222, 0.86);
+.coverflow-slide.is-hidden-edge {
+  z-index: 1;
+  opacity: 0.28;
+  filter: blur(4px);
+  transform: translate3d(0, 0, -260px) scale(0.68);
 }
 
 .carousel-nav {
@@ -689,8 +647,13 @@ h3 {
     max-width: 100%;
   }
 
-  .realisations-carousel {
-    --slides-per-view: 2;
+  .coverflow-slide {
+    flex-basis: min(74vw, 380px);
+    width: min(74vw, 380px);
+  }
+
+  .coverflow-card {
+    min-height: 500px;
   }
 }
 
@@ -734,43 +697,35 @@ h3 {
     width: 100%;
   }
 
-  .realisations-carousel {
-    --slides-per-view: 1;
+  .coverflow-carousel {
+    padding-inline: 0;
   }
 
-  .carousel-shell {
-    padding: 0;
+  .coverflow-stage {
+    padding-top: 0.5rem;
+  }
+
+  .coverflow-slide {
+    flex-basis: 86vw;
+    width: 86vw;
+    padding-inline: 0.35rem;
+  }
+
+  .coverflow-card {
+    min-height: 420px;
+    border-radius: 24px;
+  }
+
+  .coverflow-slide.is-prev {
+    transform: translate3d(12%, 0, -90px) rotateY(22deg) scale(0.86);
+  }
+
+  .coverflow-slide.is-next {
+    transform: translate3d(-12%, 0, -90px) rotateY(-22deg) scale(0.86);
   }
 
   .carousel-nav {
     display: none;
-  }
-
-  .realisations-slide {
-    min-height: 360px;
-  }
-
-  .slide-media-pair {
-    grid-template-columns: 1fr;
-  }
-
-  .before-after-divider {
-    min-height: 46px;
-    min-width: auto;
-  }
-
-  .before-after-divider::before {
-    width: 100%;
-    height: 1px;
-  }
-
-  .before-after-divider span {
-    transform: none;
-  }
-
-  .before-after-card,
-  .slide-placeholder-block {
-    min-height: 240px;
   }
 
   .mobile-sticky-cta {

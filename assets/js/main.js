@@ -1,160 +1,206 @@
 document.documentElement.classList.add('js-ready');
 
-const carousels = document.querySelectorAll('[data-carousel]');
+const coverflows = document.querySelectorAll('[data-coverflow]');
 
-carousels.forEach((carousel) => {
+coverflows.forEach((carousel) => {
   const track = carousel.querySelector('[data-carousel-track]');
-  const slides = Array.from(carousel.querySelectorAll('[data-carousel-slide]'));
   const viewport = carousel.querySelector('[data-carousel-viewport]');
-  const dotsWrap = carousel.querySelector('[data-carousel-dots]');
   const prevBtn = carousel.querySelector('[data-carousel-prev]');
   const nextBtn = carousel.querySelector('[data-carousel-next]');
-  const autoplayDelay = Number(carousel.dataset.autoplay || 4800);
+  const dotsWrap = carousel.querySelector('[data-carousel-dots]');
+  const baseSlides = Array.from(carousel.querySelectorAll('[data-carousel-slide]'));
+  const autoplayDelay = Number(carousel.dataset.autoplay || 4200);
 
-  if (!track || !slides.length) return;
+  if (!track || !viewport || baseSlides.length < 2) return;
 
-  const firstClone = slides[0].cloneNode(true);
-  const lastClone = slides[slides.length - 1].cloneNode(true);
-  firstClone.setAttribute('aria-hidden', 'true');
-  lastClone.setAttribute('aria-hidden', 'true');
+  const firstClone = baseSlides[0].cloneNode(true);
+  const lastClone = baseSlides[baseSlides.length - 1].cloneNode(true);
   firstClone.classList.add('is-clone');
   lastClone.classList.add('is-clone');
-  track.insertBefore(lastClone, slides[0]);
+  firstClone.setAttribute('aria-hidden', 'true');
+  lastClone.setAttribute('aria-hidden', 'true');
+  track.insertBefore(lastClone, baseSlides[0]);
   track.appendChild(firstClone);
 
-  const allSlides = Array.from(track.children);
+  const slides = Array.from(track.children);
   let currentIndex = 1;
-  let autoplayId = null;
   let slideWidth = 0;
-  let isDragging = false;
-  let startX = 0;
+  let gap = 0;
   let currentTranslate = 0;
   let prevTranslate = 0;
-  let animationFrame = 0;
+  let autoplayId = null;
+  let isDragging = false;
+  let startX = 0;
+  let animationFrame = null;
 
-  const dots = slides.map((_, index) => {
+  const dots = baseSlides.map((_, index) => {
     const dot = document.createElement('button');
     dot.type = 'button';
     dot.className = 'carousel-dot';
     dot.setAttribute('aria-label', `Aller à la slide ${index + 1}`);
-    dot.addEventListener('click', () => goTo(index + 1));
+    dot.addEventListener('click', () => {
+      goTo(index + 1);
+      restartAutoplay();
+    });
     dotsWrap.appendChild(dot);
     return dot;
   });
 
-  function getGap() {
+  const getGap = () => {
     const styles = window.getComputedStyle(track);
-    return parseFloat(styles.columnGap || styles.gap || 0);
-  }
+    return parseFloat(styles.gap || styles.columnGap || 0);
+  };
 
-  function updateMeasurements() {
-    slideWidth = allSlides[0].getBoundingClientRect().width + getGap();
-    jumpTo(currentIndex);
-  }
+  const setTransition = (enabled) => {
+    track.style.transition = enabled ? 'transform 0.9s cubic-bezier(0.22, 1, 0.36, 1)' : 'none';
+  };
 
-  function setActiveDot() {
-    const realIndex = ((currentIndex - 1) % slides.length + slides.length) % slides.length;
+  const visibleOffset = () => {
+    const viewportWidth = viewport.getBoundingClientRect().width;
+    return (viewportWidth - slideWidth) / 2;
+  };
+
+  const getTranslateForIndex = (index) => visibleOffset() - index * (slideWidth + gap);
+
+  const realIndexFromCurrent = () => ((currentIndex - 1) % baseSlides.length + baseSlides.length) % baseSlides.length;
+
+  const updateDots = () => {
+    const active = realIndexFromCurrent();
     dots.forEach((dot, index) => {
-      dot.classList.toggle('is-active', index === realIndex);
-      dot.setAttribute('aria-current', index === realIndex ? 'true' : 'false');
+      const isActive = index === active;
+      dot.classList.toggle('is-active', isActive);
+      dot.setAttribute('aria-current', isActive ? 'true' : 'false');
     });
-  }
+  };
 
-  function setTranslate(value, withTransition = true) {
-    track.style.transition = withTransition ? 'transform 0.72s cubic-bezier(0.22, 1, 0.36, 1)' : 'none';
+  const applyDepthState = () => {
+    slides.forEach((slide, index) => {
+      const offset = index - currentIndex;
+      slide.classList.remove('is-active', 'is-prev', 'is-next', 'is-hidden-edge');
+
+      if (offset === 0) slide.classList.add('is-active');
+      if (offset === -1) slide.classList.add('is-prev');
+      if (offset === 1) slide.classList.add('is-next');
+      if (Math.abs(offset) > 1) slide.classList.add('is-hidden-edge');
+    });
+  };
+
+  const setTranslate = (value, withTransition = true) => {
+    setTransition(withTransition);
     track.style.transform = `translate3d(${value}px, 0, 0)`;
     currentTranslate = value;
-  }
+  };
 
-  function jumpTo(index) {
-    const nextTranslate = -(index * slideWidth);
+  const jumpTo = (index) => {
+    currentIndex = index;
+    const nextTranslate = getTranslateForIndex(index);
     setTranslate(nextTranslate, false);
     prevTranslate = nextTranslate;
-    currentIndex = index;
-    setActiveDot();
-  }
+    applyDepthState();
+    updateDots();
+  };
 
-  function goTo(index) {
+  const goTo = (index) => {
     currentIndex = index;
-    const nextTranslate = -(index * slideWidth);
+    const nextTranslate = getTranslateForIndex(index);
     setTranslate(nextTranslate, true);
     prevTranslate = nextTranslate;
-    setActiveDot();
-  }
+    applyDepthState();
+    updateDots();
+  };
 
-  function normalizeIndex() {
+  const normalizeLoop = () => {
     if (currentIndex === 0) {
-      jumpTo(slides.length);
-    } else if (currentIndex === allSlides.length - 1) {
+      jumpTo(baseSlides.length);
+    } else if (currentIndex === slides.length - 1) {
       jumpTo(1);
     }
-  }
+  };
 
-  function next() {
-    goTo(currentIndex + 1);
-  }
+  const next = () => goTo(currentIndex + 1);
+  const prev = () => goTo(currentIndex - 1);
 
-  function prev() {
-    goTo(currentIndex - 1);
-  }
-
-  function startAutoplay() {
-    stopAutoplay();
-    autoplayId = window.setInterval(next, autoplayDelay);
-  }
-
-  function stopAutoplay() {
+  const stopAutoplay = () => {
     if (autoplayId) {
-      window.clearInterval(autoplayId);
+      clearInterval(autoplayId);
       autoplayId = null;
     }
-  }
+  };
 
-  function animation() {
+  const startAutoplay = () => {
+    stopAutoplay();
+    autoplayId = setInterval(next, autoplayDelay);
+  };
+
+  const restartAutoplay = () => {
+    stopAutoplay();
+    startAutoplay();
+  };
+
+  const updateMeasurements = () => {
+    slideWidth = slides[0].getBoundingClientRect().width;
+    gap = getGap();
+    jumpTo(currentIndex);
+  };
+
+  const animateDrag = () => {
     setTranslate(currentTranslate, false);
-    if (isDragging) animationFrame = requestAnimationFrame(animation);
-  }
+    if (isDragging) animationFrame = requestAnimationFrame(animateDrag);
+  };
 
-  function pointerDown(clientX) {
+  const dragStart = (clientX) => {
     isDragging = true;
     startX = clientX;
     stopAutoplay();
     track.style.cursor = 'grabbing';
-    animationFrame = requestAnimationFrame(animation);
-  }
+    animationFrame = requestAnimationFrame(animateDrag);
+  };
 
-  function pointerMove(clientX) {
+  const dragMove = (clientX) => {
     if (!isDragging) return;
-    const delta = clientX - startX;
-    currentTranslate = prevTranslate + delta;
-  }
+    const moved = clientX - startX;
+    currentTranslate = prevTranslate + moved;
+  };
 
-  function pointerUp() {
+  const dragEnd = () => {
     if (!isDragging) return;
     isDragging = false;
     cancelAnimationFrame(animationFrame);
     const movedBy = currentTranslate - prevTranslate;
     track.style.cursor = 'grab';
 
-    if (movedBy < -60) {
+    if (movedBy < -70) {
       next();
-    } else if (movedBy > 60) {
+    } else if (movedBy > 70) {
       prev();
     } else {
       goTo(currentIndex);
     }
 
     startAutoplay();
-  }
+  };
 
   prevBtn?.addEventListener('click', () => {
     prev();
-    startAutoplay();
+    restartAutoplay();
   });
 
   nextBtn?.addEventListener('click', () => {
     next();
-    startAutoplay();
+    restartAutoplay();
+  });
+
+  viewport.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      prev();
+      restartAutoplay();
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      next();
+      restartAutoplay();
+    }
   });
 
   carousel.addEventListener('mouseenter', stopAutoplay);
@@ -162,29 +208,15 @@ carousels.forEach((carousel) => {
   carousel.addEventListener('focusin', stopAutoplay);
   carousel.addEventListener('focusout', startAutoplay);
 
-  viewport.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowRight') {
-      event.preventDefault();
-      next();
-      startAutoplay();
-    }
-    if (event.key === 'ArrowLeft') {
-      event.preventDefault();
-      prev();
-      startAutoplay();
-    }
-  });
+  track.addEventListener('transitionend', normalizeLoop);
+  track.addEventListener('mousedown', (event) => dragStart(event.clientX));
+  window.addEventListener('mousemove', (event) => dragMove(event.clientX));
+  window.addEventListener('mouseup', dragEnd);
+  window.addEventListener('mouseleave', dragEnd);
 
-  track.addEventListener('transitionend', normalizeIndex);
-
-  track.addEventListener('mousedown', (event) => pointerDown(event.clientX));
-  window.addEventListener('mousemove', (event) => pointerMove(event.clientX));
-  window.addEventListener('mouseup', pointerUp);
-  window.addEventListener('mouseleave', pointerUp);
-
-  track.addEventListener('touchstart', (event) => pointerDown(event.touches[0].clientX), { passive: true });
-  track.addEventListener('touchmove', (event) => pointerMove(event.touches[0].clientX), { passive: true });
-  track.addEventListener('touchend', pointerUp);
+  track.addEventListener('touchstart', (event) => dragStart(event.touches[0].clientX), { passive: true });
+  track.addEventListener('touchmove', (event) => dragMove(event.touches[0].clientX), { passive: true });
+  track.addEventListener('touchend', dragEnd);
 
   window.addEventListener('resize', updateMeasurements);
 
