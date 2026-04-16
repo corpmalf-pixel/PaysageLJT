@@ -286,6 +286,7 @@ h3 {
   height: 100%;
   min-height: 420px;
   object-fit: cover;
+  object-position: center 40%;
   border-radius: calc(var(--radius-xl) - 8px);
 }
 
