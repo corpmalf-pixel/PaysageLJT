@@ -28,10 +28,7 @@ html {
 body {
   margin: 0;
   font-family: "Manrope", sans-serif;
-  background:
-    radial-gradient(circle at top center, rgba(255, 255, 255, 0.38), transparent 26%),
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.22), transparent 24%),
-    linear-gradient(180deg, #7ea88d 0%, #8eb69b 18%, #bddbc3 46%, #daf1de 100%);
+  background: var(--bg);
   color: var(--text);
   line-height: 1.7;
 }
@@ -146,7 +143,10 @@ video {
 
 .hero-section {
   padding-top: 3rem;
-  background: transparent;
+  background:
+    radial-gradient(circle at 50% 82%, rgba(255, 255, 255, 0.82), transparent 30%),
+    radial-gradient(circle at 52% 56%, rgba(120, 229, 202, 0.38), transparent 28%),
+    linear-gradient(180deg, #0b2f2a 0%, #14544d 24%, #1f8f84 52%, #72d9c5 74%, #f3fbf7 100%);
 }
 
 .hero-grid,
@@ -412,9 +412,7 @@ h3 {
 
 .services-section {
   position: relative;
-  background:
-    linear-gradient(180deg, rgba(218, 241, 222, 0.7), rgba(218, 241, 222, 0.78)),
-    url("../media/services/back%20ljt.jpeg") center/cover no-repeat;
+  background: transparent;
 }
 
 .services-photo-grid {
