@@ -82,7 +82,7 @@ video {
   padding: 0 1.2rem 0 1.5rem;
   border-radius: var(--radius-pill);
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr;
   align-items: center;
   gap: 1.5rem;
 }
@@ -113,9 +113,10 @@ video {
 
 .site-nav {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 1.4rem;
   flex-wrap: wrap;
+  margin-left: auto;
 }
 
 .site-nav a,
@@ -261,6 +262,10 @@ h3 {
   margin-top: 1rem;
 }
 
+.hero-copy {
+  padding-bottom: 1.5rem;
+}
+
 .hero-meta {
   display: flex;
   gap: 2rem;
@@ -275,9 +280,10 @@ h3 {
 }
 
 .hero-visual {
-  padding: 1rem;
-  background: var(--glass-dark);
-  border: 1px solid var(--border-dark);
+  padding: 0;
+  background: transparent;
+  border: none;
+  overflow: hidden;
 }
 
 .hero-media {
@@ -287,7 +293,7 @@ h3 {
   min-height: 420px;
   object-fit: cover;
   object-position: center 40%;
-  border-radius: calc(var(--radius-xl) - 8px);
+  border-radius: var(--radius-xl);
 }
 
 .media-placeholder,
@@ -364,6 +370,11 @@ h3 {
   justify-content: center;
 }
 
+.btn-compact {
+  min-height: 46px;
+  padding: 0.7rem 1.15rem;
+}
+
 .section-heading {
   width: min(100%, 860px);
 }
@@ -394,6 +405,19 @@ h3 {
 .service-card-media {
   min-height: 260px;
   justify-content: space-between;
+}
+
+.service-card-photo {
+  padding: 0;
+  overflow: hidden;
+  min-height: 320px;
+}
+
+.service-card-photo img {
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  object-fit: cover;
 }
 
 .carousel-placeholder {
@@ -482,18 +506,37 @@ h3 {
   font-weight: 800;
 }
 
-.contact-card-compact {
-  width: min(100%, 360px);
-  justify-self: end;
-  padding: 1.25rem 1.35rem;
+.contact-points-info {
+  margin-top: 1.1rem;
 }
 
-.hours-list-compact {
-  font-size: 0.92rem;
+.hours-list-inline {
+  margin: 1.5rem 0 0;
 }
 
-.hours-list-compact li {
-  padding: 0.48rem 0;
+.hours-list-inline li {
+  padding: 0.6rem 0;
+}
+
+.contact-grid-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.instagram-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.instagram-icon {
+  width: 20px;
+  height: 20px;
+  color: #2f8f5b;
+}
+
+.instagram-icon svg {
+  width: 100%;
+  height: 100%;
 }
 
 .full-width {
@@ -582,6 +625,10 @@ h3 {
     padding: 1.5rem;
   }
 
+  .service-card-photo {
+    padding: 0;
+  }
+
   .hero-actions,
   .section-cta-row {
     flex-direction: column;
@@ -589,6 +636,11 @@ h3 {
 
   .btn {
     width: 100%;
+  }
+
+  .btn-compact {
+    width: auto;
+    min-width: 0;
   }
 
   .mobile-sticky-cta {
