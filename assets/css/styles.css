@@ -410,6 +410,13 @@ h3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.services-section {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(218, 241, 222, 0.7), rgba(218, 241, 222, 0.78)),
+    url("../media/services/back%20ljt.jpeg") center/cover no-repeat;
+}
+
 .services-photo-grid {
   align-items: center;
   gap: 0;
@@ -447,10 +454,6 @@ h3 {
 
 .service-card-photo-center {
   z-index: 3;
-}
-
-.service-card-photo-backdrop img {
-  object-position: center center;
 }
 
 .service-card-photo-right {
