@@ -74,17 +74,17 @@ video {
   position: sticky;
   top: 0;
   z-index: 50;
-  padding: 1rem 0 0;
+  padding: 0.45rem 0 0;
 }
 
 .nav-shell {
-  min-height: 86px;
-  padding: 0 1.2rem 0 1.5rem;
+  min-height: 68px;
+  padding: 0 1rem 0 1.25rem;
   border-radius: var(--radius-pill);
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .brand {
@@ -130,11 +130,22 @@ video {
 
 .site-nav a {
   font-weight: 600;
+  transition: color 0.22s ease, text-shadow 0.22s ease;
+}
+
+.site-nav a:hover,
+.site-nav a:focus-visible {
+  color: var(--text);
+  text-shadow: 0 0 16px rgba(255, 255, 255, 0.7), 0 0 22px rgba(142, 182, 155, 0.55);
 }
 
 .hero-section,
 .section {
   padding: 5.5rem 0;
+}
+
+.hero-section {
+  padding-top: 3rem;
 }
 
 .hero-grid,
@@ -174,6 +185,7 @@ video {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: 1.7rem 1.85rem;
 }
 
 .eyebrow,
@@ -397,6 +409,12 @@ h3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.services-photo-grid {
+  align-items: center;
+  gap: 0;
+  margin-top: 0.5rem;
+}
+
 .service-card,
 .gallery-card {
   padding: 2rem;
@@ -411,6 +429,7 @@ h3 {
   padding: 0;
   overflow: hidden;
   min-height: 320px;
+  position: relative;
 }
 
 .service-card-photo img {
@@ -418,6 +437,26 @@ h3 {
   height: 100%;
   min-height: 320px;
   object-fit: cover;
+}
+
+.service-card-photo-left {
+  transform: rotate(-4deg) translateX(28px);
+  z-index: 1;
+}
+
+.service-card-photo-center {
+  z-index: 3;
+}
+
+.service-card-photo-right {
+  transform: rotate(4deg) translateX(-28px);
+  z-index: 1;
+}
+
+.service-card-photo-left,
+.service-card-photo-right,
+.service-card-photo-center {
+  box-shadow: 0 26px 70px rgba(5, 31, 32, 0.16);
 }
 
 .carousel-placeholder {
@@ -518,6 +557,11 @@ h3 {
   padding: 0.6rem 0;
 }
 
+.contact-hours-below {
+  margin-top: 1.6rem;
+  max-width: 380px;
+}
+
 .contact-grid-single {
   grid-template-columns: minmax(0, 1fr);
 }
@@ -531,7 +575,7 @@ h3 {
 .instagram-icon {
   width: 20px;
   height: 20px;
-  color: #2f8f5b;
+  color: #051f20;
 }
 
 .instagram-icon svg {
@@ -578,6 +622,15 @@ h3 {
   .intro-layout,
   .three-cols {
     grid-template-columns: 1fr;
+  }
+
+  .services-photo-grid {
+    gap: 1.25rem;
+  }
+
+  .service-card-photo-left,
+  .service-card-photo-right {
+    transform: none;
   }
 
   .contact-card-compact {
