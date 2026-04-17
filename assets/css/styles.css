@@ -153,14 +153,8 @@ video {
   padding: 5.5rem 0;
 }
 
-.header-subtitle-wrap {
-  display: flex;
-  justify-content: center;
-  padding-top: 0.5rem;
-}
-
-.header-subtitle {
-  margin: 0;
+.hero-pretitle {
+  margin: 0 0 0.6rem;
   font-size: 0.88rem;
   font-weight: 600;
   letter-spacing: 0.035em;
@@ -721,7 +715,7 @@ h3 {
     padding: 4rem 0;
   }
 
-  .header-subtitle {
+  .hero-pretitle {
     font-size: 0.92rem;
   }
 
